@@ -1,0 +1,14 @@
+﻿@model FormModel
+@{
+    ViewData["Title"] = "Форма оценки состояния новорождённого с подозрением на врождённый порок сердца";
+}
+
+<form asp-controller="Med" asp-action="Form" method="post">
+    <button type="submit">Получить результаты</button>
+</form>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
