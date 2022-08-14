@@ -1,34 +1,115 @@
-﻿using HeartWeb.Models;
+﻿using HeartWeb.Data;
+using HeartWeb.Instruments;
+using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartWeb.Controllers
 {
     public class MedController : Controller
     {
-        [HttpGet]
-        public IActionResult Index() => View();
+        private readonly ApplicationDbContext db;
 
+        public MedController(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
+
+        #region Index
         [HttpGet]
-        public IActionResult Form() => View();
+        public IActionResult Index()
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
+            return View();
+        }
+        #endregion
+
+        #region Form
+        [HttpGet]
+        public IActionResult Form()
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Form(FormModel model)
+        public async Task<IActionResult> Form(FormModel model)
         {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            return RedirectToAction("Result", new { id = model.ToString() });
+            model.Login = Authenticator.GetLogin(HttpContext.Session);
+            await db.FormResults.AddAsync(model);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Result", new { id = model.Id });
+        }
+        #endregion
+
+        #region Results
+        [HttpGet]
+        public IActionResult Result(int id)
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
+            FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == id);
+            if (foundModel == null)
+            {
+                return RedirectToAction("Error", "NotFound");
+            }
+            return View(foundModel);
         }
 
         [HttpGet]
-        public IActionResult Result(string id) => View(FormModel.FromString(id));
+        public IActionResult FullResult(int id)
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
+            FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == id);
+            if (foundModel == null)
+            {
+                return RedirectToAction("Error", "NotFound");
+            }
+            return View(foundModel);
+        }
+        #endregion
 
+        #region Literature
         [HttpGet]
-        public IActionResult FullResult(string id) => View(FormModel.FromString(id));
-
-        [HttpGet]
-        public IActionResult Literature() => View();
+        public IActionResult Literature()
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db))
+            {
+                return RedirectToAction("Auth", "Login");
+            }
+            #endregion
+            return View();
+        }
+        #endregion
     }
 }
