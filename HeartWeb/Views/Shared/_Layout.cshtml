@@ -49,7 +49,10 @@
                     {
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link active" asp-controller="Auth" asp-action="Logout">[@ViewData["login"]] Выход</a>
+                                <span class="nav-link active">@ViewData["login"]</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-controller="Auth" asp-action="Logout">Выход</a>
                             </li>
                         </ul>
                     }
@@ -70,7 +73,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - HeartWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - HeartWeb - <a asp-controller="Med" asp-action="Index">О Сайте</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
