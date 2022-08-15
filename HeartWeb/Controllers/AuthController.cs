@@ -2,6 +2,7 @@
 using HeartWeb.Instruments;
 using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeartWeb.Controllers
 {
@@ -36,6 +37,15 @@ namespace HeartWeb.Controllers
             return RedirectToAction("Index","Med");
         }
         #endregion
+
+        public async Task<IActionResult> Migrate()
+        {
+            if ((await db.Database.GetPendingMigrationsAsync()).Count() > 0)
+            {
+                await db.Database.MigrateAsync();
+            }
+            return RedirectToAction("Login");
+        }
 
         public IActionResult Logout()
         {

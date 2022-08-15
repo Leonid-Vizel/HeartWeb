@@ -81,6 +81,23 @@ namespace HeartWeb.Controllers
         }
 
         [HttpGet]
+        public IActionResult Results()
+        {
+            #region Auth Admin
+            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
+            if (value == null)
+            {
+                return RedirectToAction("Forbidden", "Error");
+            }
+            if (!value.Value)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            return View(db.FormResults.Count());
+        }
+
+        [HttpGet]
         public IActionResult FullResult(int id)
         {
             #region Auth
@@ -95,6 +112,28 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Error", "NotFound");
             }
             return View(foundModel);
+        }
+        #endregion
+
+        #region Export
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Export(bool numbers)
+        {
+            #region Auth Admin
+            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
+            if (value == null)
+            {
+                return RedirectToAction("Forbidden", "Error");
+            }
+            if (!value.Value)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            return File(Exporter.ExportResults(db.FormResults.ToList(), numbers),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Результаты.xlsx");
         }
         #endregion
 
