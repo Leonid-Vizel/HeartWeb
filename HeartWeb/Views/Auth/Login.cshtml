@@ -1,5 +1,23 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model AuthModel
 @{
+    ViewData["Title"] = "Вход";
+}
+
+<form asp-controller="Auth" asp-action="Login" method="post">
+    <div class="mb-1">
+        <label asp-for="Login" class="form-label"></label>
+        <input asp-for="Login" class="form-control" />
+        <span asp-validation-for="Login" class="text-danger"></span>
+    </div>
+    <div class="mb-1">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-dark mt-1">Вход</button>
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial">
 }

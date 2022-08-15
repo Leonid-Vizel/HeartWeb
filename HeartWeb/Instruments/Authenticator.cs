@@ -1,11 +1,12 @@
 ﻿using HeartWeb.Data;
 using HeartWeb.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace HeartWeb.Instruments;
 
 public static class Authenticator
 {
-    public static bool Check(ISession session, ApplicationDbContext context)
+    public static bool Check(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
     {
         string? login = session.GetString("login");
         string? hash = session.GetString("hash");
@@ -18,10 +19,12 @@ public static class Authenticator
         {
             return false;
         }
+        dictionary["login"] = login;
+        dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         return true;
     }
 
-    public static bool? CheckAdmin(ISession session, ApplicationDbContext context)
+    public static bool? CheckAdmin(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
     {
         string? login = session.GetString("login");
         string? hash = session.GetString("hash");
@@ -34,6 +37,8 @@ public static class Authenticator
         {
             return false;
         }
+        dictionary["login"] = login;
+        dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         if (!foundUser.Admin)
         {
             return null;
@@ -73,5 +78,10 @@ public static class Authenticator
         session.SetString("login", login);
         session.SetString("hash", password);
         return true;
+    }
+
+    public static void Logout(ISession session)
+    {
+        session.Clear();
     }
 }

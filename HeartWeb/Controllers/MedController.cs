@@ -19,9 +19,9 @@ namespace HeartWeb.Controllers
         public IActionResult Index()
         {
             #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             return View();
@@ -33,9 +33,9 @@ namespace HeartWeb.Controllers
         public IActionResult Form()
         {
             #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             return View();
@@ -45,16 +45,16 @@ namespace HeartWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Form(FormModel model)
         {
-            #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
-            {
-                return RedirectToAction("Auth", "Login");
-            }
-            #endregion
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
             model.Login = Authenticator.GetLogin(HttpContext.Session);
             await db.FormResults.AddAsync(model);
             await db.SaveChangesAsync();
@@ -67,9 +67,9 @@ namespace HeartWeb.Controllers
         public IActionResult Result(int id)
         {
             #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == id);
@@ -84,9 +84,9 @@ namespace HeartWeb.Controllers
         public IActionResult FullResult(int id)
         {
             #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == id);
@@ -103,9 +103,9 @@ namespace HeartWeb.Controllers
         public IActionResult Literature()
         {
             #region Auth
-            if (!Authenticator.Check(HttpContext.Session, db))
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             return View();

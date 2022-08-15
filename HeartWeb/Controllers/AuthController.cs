@@ -14,6 +14,7 @@ namespace HeartWeb.Controllers
             this.db = db;
         }
 
+        #region Login
         public IActionResult Login()
         {
             return View();
@@ -23,20 +24,37 @@ namespace HeartWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(AuthModel model)
         {
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }    
+            if (!Authenticator.Login(HttpContext.Session, db, model.Login, model.Password))
+            {
+                ModelState.AddModelError("Login", "Неверные почта или пароль!");
+                return View(model);
+            }
+            return RedirectToAction("Index","Med");
+        }
+        #endregion
+
+        public IActionResult Logout()
+        {
+            Authenticator.Logout(HttpContext.Session);
+            return RedirectToAction("Login","Auth");
         }
 
+        #region Register
         public IActionResult Register()
         {
             #region Auth Admin
-            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db);
+            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
             if (value == null)
             {
-                return RedirectToAction("Error", "Forbidden");
+                return RedirectToAction("Forbidden", "Error");
             }
             if (!value.Value)
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
             return View();
@@ -44,20 +62,30 @@ namespace HeartWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(AuthModel model)
+        public async Task<IActionResult> Register(AuthModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
             #region Auth Admin
-            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db);
+            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
             if (value == null)
             {
-                return RedirectToAction("Error", "Forbidden");
+                return RedirectToAction("Forbidden", "Error");
             }
             if (!value.Value)
             {
-                return RedirectToAction("Auth", "Login");
+                return RedirectToAction("Login", "Auth");
             }
             #endregion
-            return View();
+            if (!await Authenticator.Register(db, model.Login, model.Password))
+            {
+                ModelState.AddModelError("Login","Аккаунт на эту почту уже зарегистрирован!");
+                return View(model);
+            }
+            return RedirectToAction("Index", "Med");
         }
+        #endregion
     }
 }

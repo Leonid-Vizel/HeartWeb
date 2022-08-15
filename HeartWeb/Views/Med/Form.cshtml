@@ -1,14 +1,277 @@
-﻿@model FormModel
+﻿@using System.Reflection
+@using HeartWeb.Attributes
+@model FormModel
 @{
     ViewData["Title"] = "Форма оценки состояния новорождённого с подозрением на врождённый порок сердца";
+    Dictionary<string, string[]> options = new Dictionary<string, string[]>();
+    foreach ((string, Attribute) attribute in (new FormModel()).GetType().GetProperties().Skip(4).Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
+    {
+        OptionsAttribute custom = attribute.Item2 as OptionsAttribute;
+        options.Add(attribute.Item1, custom.Options);
+    }
 }
 
 <form asp-controller="Med" asp-action="Form" method="post">
-    <button type="submit">Получить результаты</button>
+    <div class="mb-1">
+        <div class="form-check">
+            <input asp-for="Prematurity" class="form-check-input">
+            <label asp-for="Prematurity" class="form-check-label"></label>
+        </div>
+        <span asp-validation-for="Prematurity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <div class="form-check">
+            <input asp-for="Aspiration" class="form-check-input">
+            <label asp-for="Aspiration" class="form-check-label"></label>
+        </div>
+        <span asp-validation-for="Aspiration" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="Apgar" class="form-label"></label>
+        <select asp-for="Apgar" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["Apgar"].Length; i++)
+            {
+                <option value="@i">@options["Apgar"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="Apgar" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="StatusDynamics" class="form-label"></label>
+        <select asp-for="StatusDynamics" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["StatusDynamics"].Length; i++)
+            {
+                <option value="@i">@options["StatusDynamics"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="StatusDynamics" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="BreathFrequency" class="form-label"></label>
+        <select asp-for="BreathFrequency" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["BreathFrequency"].Length; i++)
+            {
+                <option value="@i">@options["BreathFrequency"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="BreathFrequency" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="HeartBeatFrequency" class="form-label"></label>
+        <select asp-for="HeartBeatFrequency" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["HeartBeatFrequency"].Length; i++)
+            {
+                <option value="@i">@options["HeartBeatFrequency"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="HeartBeatFrequency" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="SkinColor" class="form-label"></label>
+        <select asp-for="SkinColor" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["SkinColor"].Length; i++)
+            {
+                <option value="@i">@options["SkinColor"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="SkinColor" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="PerepherialPulse" class="form-label"></label>
+        <select asp-for="PerepherialPulse" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["PerepherialPulse"].Length; i++)
+            {
+                <option value="@i">@options["PerepherialPulse"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="PerepherialPulse" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="AuskultativePicture" class="form-label"></label>
+        <select asp-for="AuskultativePicture" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["AuskultativePicture"].Length; i++)
+            {
+                <option value="@i">@options["AuskultativePicture"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="AuskultativePicture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="NoiseDynamics" class="form-label"></label>
+        <select asp-for="NoiseDynamics" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["NoiseDynamics"].Length; i++)
+            {
+                <option value="@i">@options["NoiseDynamics"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="NoiseDynamics" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="WeightDynamics" class="form-label"></label>
+        <select asp-for="WeightDynamics" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["WeightDynamics"].Length; i++)
+            {
+                <option value="@i">@options["WeightDynamics"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="WeightDynamics" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="Diurez" class="form-label"></label>
+        <select asp-for="Diurez" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["Diurez"].Length; i++)
+            {
+                <option value="@i">@options["Diurez"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="Diurez" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="AuskultativeLungPicture" class="form-label"></label>
+        <select asp-for="AuskultativeLungPicture" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["AuskultativeLungPicture"].Length; i++)
+            {
+                <option value="@i">@options["AuskultativeLungPicture"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="AuskultativeLungPicture" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="CardioDynamics" class="form-label"></label>
+        <select asp-for="CardioDynamics" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["CardioDynamics"].Length; i++)
+            {
+                <option value="@i">@options["CardioDynamics"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="CardioDynamics" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="OxygenBreathTest" class="form-label"></label>
+        <select asp-for="OxygenBreathTest" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["OxygenBreathTest"].Length; i++)
+            {
+                <option value="@i">@options["OxygenBreathTest"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="OxygenBreathTest" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="ArterialPressure" class="form-label"></label>
+        <select asp-for="ArterialPressure" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["ArterialPressure"].Length; i++)
+            {
+                <option value="@i">@options["ArterialPressure"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="ArterialPressure" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="ECG" class="form-label"></label>
+        <select asp-for="ECG" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["ECG"].Length; i++)
+            {
+                <option value="@i">@options["ECG"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="ECG" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="Rentgenography" class="form-label"></label>
+        <select asp-for="Rentgenography" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["Rentgenography"].Length; i++)
+            {
+                <option value="@i">@options["Rentgenography"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="Rentgenography" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="LungFields" class="form-label"></label>
+        <select asp-for="LungFields" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["LungFields"].Length; i++)
+            {
+                <option value="@i">@options["LungFields"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="LungFields" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="Saturation" class="form-label"></label>
+        <select asp-for="Saturation" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["Saturation"].Length; i++)
+            {
+                <option value="@i">@options["Saturation"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="Saturation" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="PO2" class="form-label"></label>
+        <select asp-for="PO2" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["PO2"].Length; i++)
+            {
+                <option value="@i">@options["PO2"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="PO2" class="text-danger"></span>
+    </div>
+
+    <div class="mb-1">
+        <label asp-for="AcidAlkalineState" class="form-label"></label>
+        <select asp-for="AcidAlkalineState" class="form-select">
+            <option disabled selected style="display:none">Выберите опцию</option>
+            @for (int i = 0; i < options["AcidAlkalineState"].Length; i++)
+            {
+                <option value="@i">@options["AcidAlkalineState"][i]</option>
+            }
+        </select>
+        <span asp-validation-for="AcidAlkalineState" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-dark mt-1">Получить результаты</button>
 </form>
 
 
 @section Scripts
-{
-    <partial name="_ValidationScriptsPartial"/>
-}
+    {
+    <partial name="_ValidationScriptsPartial">
+    }
