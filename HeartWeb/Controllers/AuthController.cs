@@ -53,6 +53,23 @@ namespace HeartWeb.Controllers
             return RedirectToAction("Login","Auth");
         }
 
+        public async Task<IActionResult> SelfData()
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            string login = Authenticator.GetLogin(HttpContext.Session).ToLower();
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x=>x.Login.Equals(login));
+            if (foundUser == null)
+            {
+                return RedirectToAction("NotFound", "Error");
+            }
+            return View(foundUser);
+        }
+
         #region Register
         public IActionResult Register()
         {
@@ -72,7 +89,7 @@ namespace HeartWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(AuthModel model)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -89,7 +106,7 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Login", "Auth");
             }
             #endregion
-            if (!await Authenticator.Register(db, model.Login, model.Password))
+            if (!await Authenticator.Register(db, model))
             {
                 ModelState.AddModelError("Login","Аккаунт на эту почту уже зарегистрирован!");
                 return View(model);

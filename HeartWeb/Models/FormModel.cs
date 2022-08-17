@@ -12,6 +12,9 @@ public class FormModel
     public int Id { get; set; }
     [ValidateNever]
     public string Login { get; set; } = null!;
+    [ValidateNever]
+    [DisplayName("Время сохранения: ")]
+    public DateTime SaveTime { get; set; }
     [DisplayName("Недоношенность")]
     public bool Prematurity { get; set; }
     [DisplayName("Аспирация околоплодных вод (особенно мекониальная)")]
@@ -120,7 +123,7 @@ public class FormModel
     public int Calculate()
     {
         int total = 0;
-        foreach(PropertyInfo info in GetType().GetProperties().Skip(4))
+        foreach(PropertyInfo info in GetType().GetProperties().Skip(5))
         {
             WeightsAttribute attribute = info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute;
             total += attribute.Weights[(byte)info.GetValue(this)];

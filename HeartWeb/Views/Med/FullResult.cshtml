@@ -6,13 +6,13 @@
     ViewData["Title"] = "Подробные результаты";
     List<string> names = new List<string>();
     List<string> options = new List<string>();
-    List<int> weights = new List<int>();
-    foreach (PropertyInfo info in Model.GetType().GetProperties().Skip(4))
+    //List<int> weights = new List<int>();
+    foreach (PropertyInfo info in Model.GetType().GetProperties().Skip(5))
     {
         byte value = (byte)info.GetValue(Model);
         names.Add(((info.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute)).DisplayName);
-        weights.Add((info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute).Weights[value]);
         options.Add((info.GetCustomAttribute(typeof(OptionsAttribute)) as OptionsAttribute).Options[value]);
+        //weights.Add((info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute).Weights[value]);
     }
 }
 
@@ -21,7 +21,7 @@
         <tr>
             <td><b>Параметр</b></td>
             <td><b>Ответ</b></td>
-            <td><b>Баллы</b></td>
+            @*<td><b>Баллы</b></td>*@
         </tr>
     </thead>
     <tbody>
@@ -33,12 +33,12 @@
             @if (Model.Prematurity)
             {
                 <td>Да</td>
-                <td>-2</td>
+                @*<td>-2</td>*@
             }
             else
             {
                 <td>Нет</td>
-                <td>0</td>
+                @*<td>0</td>*@
             }
         </tr>
         <tr>
@@ -46,12 +46,12 @@
             @if (Model.Aspiration)
             {
                 <td>Да</td>
-                <td>-2</td>
+                @*<td>-2</td>*@
             }
             else
             {
                 <td>Нет</td>
-                <td>0</td>
+                @*<td>0</td>*@
             }
         </tr>
         @for (int i = 0; i < 9; i++)
@@ -59,7 +59,7 @@
             <tr>
                 <td>@names[i]</td>
                 <td>@options[i]</td>
-                <td>@weights[i]</td>
+                @*<td>@weights[i]</td>*@
             </tr>
         }
         <tr class="text-center">
@@ -70,13 +70,13 @@
             <tr>
                 <td>@names[i]</td>
                 <td>@options[i]</td>
-                <td>@weights[i]</td>
+                @*<td>@weights[i]</td>*@
             </tr>
         }
-        <tr>
+        @*<tr>
             <td><b>Итог</b></td>
             <td></td>
             <td><b>@Model.Calculate()</b></td>
-        </tr>
+        </tr>*@
     </tbody>
 </table>

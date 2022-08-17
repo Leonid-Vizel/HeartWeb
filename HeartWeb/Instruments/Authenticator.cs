@@ -19,7 +19,7 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = login;
+        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         return true;
     }
@@ -37,7 +37,7 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = login;
+        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         if (!foundUser.Admin)
         {
@@ -48,18 +48,24 @@ public static class Authenticator
 
     public static string GetLogin(ISession session) => session.GetString("login") ?? "";
 
-    public static async Task<bool> Register(ApplicationDbContext context, string login, string password)
+    public static async Task<bool> Register(ApplicationDbContext context, RegisterModel model)
     {
-        login = login.ToLower();
-        User? foundUser = context.Users.FirstOrDefault(x=>x.Login.ToLower().Equals(login));
+        model.Login = model.Login.ToLower();
+        User? foundUser = context.Users.FirstOrDefault(x=>x.Login.ToLower().Equals(model.Login));
         if (foundUser != null)
         {
             return false;
         }
         User user = new User()
         {
-            Login = login,
-            Password = Hasher.ComputeHash(login, password)
+            Login = model.Login,
+            Password = Hasher.ComputeHash(model.Login, model.Password),
+            Name = model.Name,
+            Surname = model.Surname,
+            Phone = model.Phone,
+            Region = model.Region,
+            IsFromCity = model.IsFromCity == 1,
+            Admin = false
         };
         await context.Users.AddAsync(user);
         await context.SaveChangesAsync();

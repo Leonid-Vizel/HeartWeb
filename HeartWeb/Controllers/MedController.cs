@@ -56,6 +56,7 @@ namespace HeartWeb.Controllers
             }
             #endregion
             model.Login = Authenticator.GetLogin(HttpContext.Session);
+            model.SaveTime = DateTime.Now;
             await db.FormResults.AddAsync(model);
             await db.SaveChangesAsync();
             return RedirectToAction("Result", new { id = model.Id });
@@ -118,7 +119,7 @@ namespace HeartWeb.Controllers
         #region Export
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Export(bool numbers)
+        public IActionResult Export()
         {
             #region Auth Admin
             bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
@@ -131,7 +132,7 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Login", "Auth");
             }
             #endregion
-            return File(Exporter.ExportResults(db.FormResults.ToList(), numbers),
+            return File(Exporter.ExportResults(db.FormResults.ToList()),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Результаты.xlsx");
         }

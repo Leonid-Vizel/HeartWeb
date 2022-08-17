@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Форма оценки состояния новорождённого с подозрением на врождённый порок сердца";
     Dictionary<string, string[]> options = new Dictionary<string, string[]>();
-    foreach ((string, Attribute) attribute in (new FormModel()).GetType().GetProperties().Skip(4).Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
+    foreach ((string, Attribute) attribute in (new FormModel()).GetType().GetProperties().Skip(5).Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
     {
         OptionsAttribute custom = attribute.Item2 as OptionsAttribute;
         options.Add(attribute.Item1, custom.Options);
