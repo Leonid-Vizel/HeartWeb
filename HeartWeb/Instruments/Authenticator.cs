@@ -19,7 +19,8 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
+        dictionary["login"] = foundUser.Login;
+        dictionary["name"] = $"{foundUser.Name} {foundUser.Surname}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         return true;
     }
@@ -37,7 +38,8 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
+        dictionary["login"] = foundUser.Login;
+        dictionary["name"] = $"{foundUser.Name} {foundUser.Surname}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         if (!foundUser.Admin)
         {
@@ -46,7 +48,7 @@ public static class Authenticator
         return true;
     }
 
-    public static string GetLogin(ISession session) => session.GetString("login") ?? "";
+    public static string GetLogin(ViewDataDictionary dictionary) => (dictionary["login"] ?? "").ToString();
 
     public static async Task<bool> Register(ApplicationDbContext context, RegisterModel model)
     {

@@ -1,8 +1,8 @@
 using HeartWeb.Data;
+using HeartWeb.Instruments;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
