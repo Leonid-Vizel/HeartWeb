@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeartWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220821214704_ModifiedUserAndForm")]
+    [Migration("20220821220611_ModifiedUserAndForm")]
     partial class ModifiedUserAndForm
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,13 +6,15 @@
     int counter = (Model.PageNumber-1) * MedController.pageCapacity;
 }
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 <partial name="_PagerPartial">
 
-<table class="table table-hover">
+<table class="table table-hover text-center">
     <thead>
         <tr>
             <td>№ п/п</td>
             <td>Время отправки</td>
+            <td>Редактирование</td>
             <td>Просмотр</td>
         </tr>
     </thead>
@@ -23,7 +25,8 @@
             <tr>
                 <td>@counter</td>
                 <td>@result.Item2.ToString("dd.MM.yyyy HH:mm")</td>
-                <td><a class="btn-link" asp-controller="Med" asp-action="Result" asp-route-id="@result.Item1">Перейти</a></td>
+                <td><a class="btn btn-warning" asp-controller="Med" asp-action="Edit" asp-route-id="@result.Item1"><i class="bi bi-pencil-fill"></i></a></td>
+                <td><a class="btn btn-info" asp-controller="Med" asp-action="Result" asp-route-id="@result.Item1"><i class="bi bi-eye-fill"></i></a></td>
             </tr>
         }
     </tbody>

@@ -28,13 +28,13 @@ namespace HeartWeb.Controllers
             if (!ModelState.IsValid)
             {
                 return View(model);
-            }    
+            }
             if (!Authenticator.Login(HttpContext.Session, db, model.Login, model.Password))
             {
                 ModelState.AddModelError("Login", "Неверные почта или пароль!");
                 return View(model);
             }
-            return RedirectToAction("Index","Med");
+            return RedirectToAction("Index", "Med");
         }
         #endregion
 
@@ -50,7 +50,7 @@ namespace HeartWeb.Controllers
         public IActionResult Logout()
         {
             Authenticator.Logout(HttpContext.Session);
-            return RedirectToAction("Login","Auth");
+            return RedirectToAction("Login", "Auth");
         }
 
         public IActionResult Users()
@@ -78,7 +78,7 @@ namespace HeartWeb.Controllers
             }
             #endregion
             string login = Authenticator.GetLogin(ViewData).ToLower();
-            User? foundUser = await db.Users.FirstOrDefaultAsync(x=>x.Login.Equals(login));
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Login.Equals(login));
             if (foundUser == null)
             {
                 return RedirectToAction("NotFound", "Error");
@@ -124,7 +124,7 @@ namespace HeartWeb.Controllers
             #endregion
             if (!await Authenticator.Register(db, model))
             {
-                ModelState.AddModelError("Login","Аккаунт на эту почту уже зарегистрирован!");
+                ModelState.AddModelError("Login", "Аккаунт на эту почту уже зарегистрирован!");
                 return View(model);
             }
             return RedirectToAction("Index", "Med");
