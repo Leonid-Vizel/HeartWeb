@@ -2,11 +2,13 @@
 using HeartWeb.Instruments;
 using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace HeartWeb.Controllers
 {
     public class MedController : Controller
     {
+        public const int pageCapacity = 10;
         private readonly ApplicationDbContext db;
 
         public MedController(ApplicationDbContext db)
@@ -53,7 +55,7 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Login", "Auth");
             }
             #endregion
-            model.Login = Authenticator.GetLogin(HttpContext.Session);
+            model.Login = Authenticator.GetLogin(ViewData);
             model.SaveTime = DateTime.Now;
             await db.FormResults.AddAsync(model);
             await db.SaveChangesAsync();
@@ -150,6 +152,22 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Error", "NotFound");
             }
             return View(foundModel);
+        }
+
+        [HttpGet]
+        public IActionResult MyResults(int page = 1)
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            if (page < 1)
+            {
+                page = 1;
+            }
+            return View(db.FormResults.Where(x=>x.Login.Equals(Authenticator.GetLogin(ViewData))).Select(x=> new Tuple<int, DateTime>(x.Id,x.SaveTime)).ToPagedList(page, pageCapacity));
         }
         #endregion
 

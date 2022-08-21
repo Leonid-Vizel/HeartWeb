@@ -53,6 +53,22 @@ namespace HeartWeb.Controllers
             return RedirectToAction("Login","Auth");
         }
 
+        public IActionResult Users()
+        {
+            #region Auth Admin
+            bool? value = Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
+            if (value == null)
+            {
+                return RedirectToAction("Forbidden", "Error");
+            }
+            if (!value.Value)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            return View(db.Users.ToList());
+        }
+
         public async Task<IActionResult> SelfData()
         {
             #region Auth
@@ -61,7 +77,7 @@ namespace HeartWeb.Controllers
                 return RedirectToAction("Login", "Auth");
             }
             #endregion
-            string login = Authenticator.GetLogin(HttpContext.Session).ToLower();
+            string login = Authenticator.GetLogin(ViewData).ToLower();
             User? foundUser = await db.Users.FirstOrDefaultAsync(x=>x.Login.Equals(login));
             if (foundUser == null)
             {

@@ -1,0 +1,31 @@
+﻿@using HeartWeb.Controllers
+@using X.PagedList
+@model IPagedList<Tuple<int, DateTime>>
+@{
+    ViewData["Title"] = "Мои результаты";
+    int counter = (Model.PageNumber-1) * MedController.pageCapacity;
+}
+
+<partial name="_PagerPartial">
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>№ п/п</td>
+            <td>Время отправки</td>
+            <td>Просмотр</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(Tuple<int, DateTime> result in Model)
+        {
+            counter++;
+            <tr>
+                <td>@counter</td>
+                <td>@result.Item2.ToString("dd.MM.yyyy HH:mm")</td>
+                <td><a class="btn-link" asp-controller="Med" asp-action="Result" asp-route-id="@result.Item1">Перейти</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<partial name="_PagerPartial">
