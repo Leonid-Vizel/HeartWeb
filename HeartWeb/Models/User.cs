@@ -16,10 +16,6 @@ namespace HeartWeb.Models
         public string Name { get; set; }
         [Required]
         [MinLength(1)]
-        [MaxLength(200)]
-        public string Surname { get; set; }
-        [Required]
-        [MinLength(1)]
         [MaxLength(16)]
         public string Phone { get; set; }
         [Required]

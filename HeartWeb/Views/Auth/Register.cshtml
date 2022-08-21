@@ -4,17 +4,10 @@
 }
 
 <form asp-controller="Auth" asp-action="Register" method="post">
-    <div class="row mb-1">
-        <div class="col">
-            <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
-        <div class="col">
-            <label asp-for="Surname" class="form-label"></label>
-            <input asp-for="Surname" class="form-control" />
-            <span asp-validation-for="Surname" class="text-danger"></span>
-        </div>
+    <div class="mb-1">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="row mb-1">
         <div class="col">

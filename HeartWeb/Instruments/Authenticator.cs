@@ -19,7 +19,7 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
+        dictionary["login"] = $"{foundUser.Name}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         return true;
     }
@@ -37,7 +37,7 @@ public static class Authenticator
         {
             return false;
         }
-        dictionary["login"] = $"{foundUser.Name} {foundUser.Surname}";
+        dictionary["login"] = $"{foundUser.Name}";
         dictionary["admin"] = foundUser.Admin.ToString().ToLower();
         if (!foundUser.Admin)
         {
@@ -61,7 +61,6 @@ public static class Authenticator
             Login = model.Login,
             Password = Hasher.ComputeHash(model.Login, model.Password),
             Name = model.Name,
-            Surname = model.Surname,
             Phone = model.Phone,
             Region = model.Region,
             IsFromCity = model.IsFromCity == 1,

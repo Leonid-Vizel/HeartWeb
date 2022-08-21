@@ -15,7 +15,6 @@ namespace HeartWeb.Controllers
         }
 
         #region Index
-        [HttpGet]
         public IActionResult Index()
         {
             #region Auth
@@ -29,7 +28,6 @@ namespace HeartWeb.Controllers
         #endregion
 
         #region Form
-        [HttpGet]
         public IActionResult Form()
         {
             #region Auth
@@ -63,8 +61,49 @@ namespace HeartWeb.Controllers
         }
         #endregion
 
+        #region Edit
+        public IActionResult Edit(int id)
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == id);
+            if (foundModel == null)
+            {
+                return RedirectToAction("Error", "NotFound");
+            }
+            return View(foundModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(FormModel model)
+        {
+            #region Auth
+            if (!Authenticator.Check(HttpContext.Session, db, ViewData))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+            #endregion
+            FormModel? foundModel = db.FormResults.FirstOrDefault(x => x.Id == model.Id);
+            if (foundModel == null)
+            {
+                return RedirectToAction("Error", "NotFound");
+            }
+            foundModel.Update(model);
+            if (db.Entry(foundModel).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            {
+                db.Update(foundModel);
+                await db.SaveChangesAsync();
+            }
+            return RedirectToAction("Result", new { id = model.Id });
+        }
+        #endregion
+
         #region Results
-        [HttpGet]
         public IActionResult Result(int id)
         {
             #region Auth
@@ -81,7 +120,6 @@ namespace HeartWeb.Controllers
             return View(foundModel);
         }
 
-        [HttpGet]
         public IActionResult Results()
         {
             #region Auth Admin
@@ -98,7 +136,6 @@ namespace HeartWeb.Controllers
             return View(db.FormResults.Count());
         }
 
-        [HttpGet]
         public IActionResult FullResult(int id)
         {
             #region Auth
@@ -139,7 +176,6 @@ namespace HeartWeb.Controllers
         #endregion
 
         #region Literature
-        [HttpGet]
         public IActionResult Literature()
         {
             #region Auth

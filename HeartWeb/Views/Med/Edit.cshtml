@@ -2,7 +2,7 @@
 @using HeartWeb.Attributes
 @model FormModel
 @{
-    ViewData["Title"] = "Форма оценки состояния новорождённого с подозрением на врождённый порок сердца";
+    ViewData["Title"] = "Редактирование формы оценки состояния новорождённого с подозрением на врождённый порок сердца";
     Dictionary<string, string[]> options = new Dictionary<string, string[]>();
     foreach ((string, Attribute) attribute in (new FormModel()).GetType().GetProperties().Skip(10).Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
     {
@@ -11,7 +11,7 @@
     }
 }
 
-<form asp-controller="Med" asp-action="Form" method="post">
+<form asp-controller="Med" asp-action="Edit" asp-route-id="@Model.Id" method="post">
     <div class="row mb-1">
         <div class="col">
             <label asp-for="BirthTime" class="form-label"></label>
@@ -305,7 +305,7 @@
         </select>
         <span asp-validation-for="AcidAlkalineState" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-dark mt-1">Получить результаты</button>
+    <button type="submit" class="btn btn-dark mt-1">Отправить поправки</button>
 </form>
 
 

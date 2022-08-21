@@ -3,40 +3,34 @@
     ViewData["Title"] = "Информация о Вас";
 }
 
-<div class="row mb-1">
-    <div class="col">
-        <label class="form-label">Имя</label>
-        <input asp-for="Name" class="form-control" disabled/>
-    </div>
-    <div class="col">
-        <label class="form-label">Фамилия</label>
-        <input asp-for="Surname" class="form-control" disabled/>
-    </div>
+<div class="mb-1">
+    <label class="form-label">Название организации</label>
+    <input asp-for="Name" class="form-control" disabled />
 </div>
 <div class="row mb-1">
     <div class="col">
         <label class="form-label">Почта</label>
-        <input asp-for="Login" class="form-control" disabled/>
+        <input asp-for="Login" class="form-control" disabled />
     </div>
     <div class="col">
         <label class="form-label">Номер телефона</label>
-        <input asp-for="Phone" class="form-control" disabled/>
+        <input asp-for="Phone" class="form-control" disabled />
     </div>
 </div>
 <div class="row mb-1">
     <div class="col">
         <label class="form-label">Регион</label>
-        <input asp-for="Region" class="form-control" disabled/>
+        <input asp-for="Region" class="form-control" disabled />
     </div>
     <div class="col">
         <label class="form-label">Откуда</label>
         @if (Model.IsFromCity)
         {
-            <input class="form-control" value="Город"disabled/>
+            <input class="form-control" value="Город" disabled />
         }
         else
         {
-            <input class="form-control" value="Село" disabled/>
+            <input class="form-control" value="Село" disabled />
         }
     </div>
 </div>

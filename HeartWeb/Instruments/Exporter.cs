@@ -42,7 +42,7 @@ namespace HeartWeb.Instruments
                     {
                         row.Add("Нет");
                     }
-                    foreach (PropertyInfo info in model.GetType().GetProperties().Skip(5))
+                    foreach (PropertyInfo info in model.GetType().GetProperties().Skip(10))
                     {
                         byte value = (byte)info.GetValue(model);
                         row.Add((info.GetCustomAttribute(typeof(OptionsAttribute)) as OptionsAttribute).Options[value]);

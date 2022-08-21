@@ -15,16 +15,11 @@ namespace HeartWeb.Models
         [DisplayName("Пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = null!;
-        [Required(ErrorMessage = "Укажите имя!")]
-        [MinLength(1, ErrorMessage = "Минимальный размер имени: 1 символ!")]
-        [MaxLength(200, ErrorMessage = "Максимальный размер имени: 200 символов!")]
-        [DisplayName("Имя")]
+        [Required(ErrorMessage = "Укажите название организации!")]
+        [MinLength(1, ErrorMessage = "Минимальный размер названия: 1 символ!")]
+        [MaxLength(200, ErrorMessage = "Максимальный размер названия: 200 символов!")]
+        [DisplayName("Название оргинизации")]
         public string Name { get; set; }
-        [Required(ErrorMessage = "Укажите фамилию!")]
-        [MinLength(1, ErrorMessage = "Минимальный размер фамилии: 1 символ!")]
-        [MaxLength(200, ErrorMessage = "Максимальный размер фамилии: 200 символов!")]
-        [DisplayName("Фамилия")]
-        public string Surname { get; set; }
         [Required(ErrorMessage = "Укажите номер телефона!")]
         [MinLength(1, ErrorMessage = "Минимальный размер телефонного номера: 1 символ!")]
         [MaxLength(16, ErrorMessage = "Максимальный размер телефонного номера: 16 символов!")]
