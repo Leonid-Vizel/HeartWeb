@@ -8,6 +8,8 @@ namespace HeartWeb.Models;
 
 public class FormModel
 {
+    public const int SkipNumber = 11;
+
     [Key]
     public int Id { get; set; }
     [ValidateNever]
@@ -24,6 +26,11 @@ public class FormModel
     [DisplayName("Время рождения ребёнка")]
     [Required(ErrorMessage = "Укажите время рождения ребёнка!")]
     public DateTime BirthTime { get; set; }
+
+    [DisplayName("На какой день от рождения проводились анализы?")]
+    [Required(ErrorMessage = "Укажите на какой день от рождения проводились анализы!")]
+    [Range(0,28,ErrorMessage = "Форма действительна только если анализы проведены не более чем через 28 дней после рождения!")]
+    public int DaysPassed { get; set; }
 
     [Required(ErrorMessage = "Укажите номер телефона!")]
     [MinLength(1, ErrorMessage = "Минимальный размер телефонного номера: 1 символ!")]
@@ -74,7 +81,7 @@ public class FormModel
     [Required(ErrorMessage = "Укажите окраску кожи!")]
     public byte SkinColor { get; set; }
     [DisplayName("Переферический пульс:")]
-    [Options("Удоавлетворительного наполнения на всех конечностях", "Не определяется на бедренной артерии", "Симметрично снижен")]
+    [Options("Удовлетворительного наполнения на всех конечностях", "Не определяется на бедренной артерии", "Симметрично снижен")]
     [Weights(0, 5, 5)]
     [Required(ErrorMessage = "Укажите переферический пульс!")]
     public byte PerepherialPulse { get; set; }
@@ -149,10 +156,15 @@ public class FormModel
     [Required(ErrorMessage = "Укажите КЩС!")]
     public byte AcidAlkalineState { get; set; }
 
+    public IEnumerable<PropertyInfo> GetSelectProperties()
+    {
+        return GetType().GetProperties().Skip(SkipNumber);
+    }
+
     public int Calculate()
     {
         int total = 0;
-        foreach (PropertyInfo info in GetType().GetProperties().Skip(10))
+        foreach (PropertyInfo info in GetSelectProperties())
         {
             WeightsAttribute attribute = info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute;
             total += attribute.Weights[(byte)info.GetValue(this)];

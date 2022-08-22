@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Редактирование формы оценки состояния новорождённого с подозрением на врождённый порок сердца";
     Dictionary<string, string[]> options = new Dictionary<string, string[]>();
-    foreach ((string, Attribute) attribute in (new FormModel()).GetType().GetProperties().Skip(10).Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
+    foreach ((string, Attribute) attribute in (new FormModel()).GetSelectProperties().Select(x => (x.Name, x.GetCustomAttribute(typeof(OptionsAttribute)))))
     {
         OptionsAttribute custom = attribute.Item2 as OptionsAttribute;
         options.Add(attribute.Item1, custom.Options);
@@ -13,12 +13,12 @@
 
 <form asp-controller="Med" asp-action="Edit" asp-route-id="@Model.Id" method="post">
     <div class="row mb-1">
-        <div class="col">
+        <div class="col-md-4">
             <label asp-for="BirthTime" class="form-label"></label>
             <input asp-for="BirthTime" class="form-control" />
             <span asp-validation-for="BirthTime" class="text-danger"></span>
         </div>
-        <div class="col">
+        <div class="col-md-4">
             <label asp-for="ChildSex" class="form-label"></label>
             <select asp-for="ChildSex" class="form-select">
                 <option disabled selected style="display:none">Выберите опцию</option>
@@ -26,6 +26,11 @@
                 <option value="1">Девочка</option>
             </select>
             <span asp-validation-for="ChildSex" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="DaysPassed" class="form-label"></label>
+            <input asp-for="DaysPassed" class="form-control" />
+            <span asp-validation-for="DaysPassed" class="text-danger"></span>
         </div>
     </div>
 
@@ -36,12 +41,12 @@
     </div>
 
     <div class="row mb-1">
-        <div class="col">
+        <div class="col-sm-6">
             <label asp-for="Region" class="form-label"></label>
             <input asp-for="Region" class="form-control" />
             <span asp-validation-for="Region" class="text-danger"></span>
         </div>
-        <div class="col">
+        <div class="col-sm-6">
             <label asp-for="Town" class="form-label"></label>
             <input asp-for="Town" class="form-control" />
             <span asp-validation-for="Town" class="text-danger"></span>
@@ -305,7 +310,7 @@
         </select>
         <span asp-validation-for="AcidAlkalineState" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-dark mt-1">Отправить поправки</button>
+    <button type="submit" class="btn btn-dark mt-1">Получить результаты</button>
 </form>
 
 

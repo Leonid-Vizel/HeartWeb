@@ -4,45 +4,47 @@
     int counter = 0;
 }
 <a class="btn btn-outline-success w-100 mb-2" asp-controller="Auth" asp-action="Register">Зарегистрировать нового</a>
-<table class="table table-sm table-bordered table-hover table-success">
-    <thead>
-        <tr>
-            <td>№ п/п</td>
-            <td>Почта</td>
-            <td>Телефон</td>
-            <td>Название</td>
-            <td>Город/Село</td>
-            <td>Регион</td>
-            <td>Админ/Работник</td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (User user in Model)
-        {
-            counter++;
+<div class="table-responsive">
+    <table class="table table-sm table-bordered table-hover table-success mb-0">
+        <thead>
             <tr>
-                <td>@counter</td>
-                <td>@user.Login</td>
-                <td>@user.Phone</td>
-                <td>@user.Name</td>
-                @if (user.IsFromCity)
-                {
-                    <td>Город</td>
-                }
-                else
-                {
-                    <td>Село</td>
-                }
-                <td>@user.Region</td>
-                @if (user.Admin)
-                {
-                    <td>Админ</td>
-                }
-                else
-                {
-                    <td>Работник</td>
-                }
+                <td>№ п/п</td>
+                <td>Почта</td>
+                <td>Телефон</td>
+                <td>Название</td>
+                <td>Город/Село</td>
+                <td>Регион</td>
+                <td>Админ/Работник</td>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (User user in Model)
+            {
+                counter++;
+                <tr>
+                    <td>@counter</td>
+                    <td>@user.Login</td>
+                    <td>@user.Phone</td>
+                    <td>@user.Name</td>
+                    @if (user.IsFromCity)
+                    {
+                        <td>Город</td>
+                    }
+                    else
+                    {
+                        <td>Село</td>
+                    }
+                    <td>@user.Region</td>
+                    @if (user.Admin)
+                    {
+                        <td>Админ</td>
+                    }
+                    else
+                    {
+                        <td>Работник</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

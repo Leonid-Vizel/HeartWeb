@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HeartWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220821220611_ModifiedUserAndForm")]
-    partial class ModifiedUserAndForm
+    [Migration("20220822194240_FinalMigration")]
+    partial class FinalMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,6 +60,9 @@ namespace HeartWeb.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<int>("ChildSex")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DaysPassed")
                         .HasColumnType("int");
 
                     b.Property<byte>("Diurez")

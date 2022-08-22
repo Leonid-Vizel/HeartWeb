@@ -60,6 +60,9 @@ namespace HeartWeb.Migrations
                     b.Property<int>("ChildSex")
                         .HasColumnType("int");
 
+                    b.Property<int>("DaysPassed")
+                        .HasColumnType("int");
+
                     b.Property<byte>("Diurez")
                         .HasColumnType("tinyint");
 

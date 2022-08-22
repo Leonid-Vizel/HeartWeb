@@ -31,3 +31,7 @@ hr {
     padding-left: 11px;
     font-size: 1.25rem;
 }
+
+.mb-0 {
+    margin-bottom: 0px;
+}

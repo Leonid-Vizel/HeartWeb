@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HeartWeb.Migrations
 {
-    public partial class ModifiedUserAndForm : Migration
+    public partial class FinalMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,6 +22,13 @@ namespace HeartWeb.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "ChildSex",
+                table: "FormResults",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "DaysPassed",
                 table: "FormResults",
                 type: "int",
                 nullable: false,
@@ -60,6 +67,10 @@ namespace HeartWeb.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ChildSex",
+                table: "FormResults");
+
+            migrationBuilder.DropColumn(
+                name: "DaysPassed",
                 table: "FormResults");
 
             migrationBuilder.DropColumn(

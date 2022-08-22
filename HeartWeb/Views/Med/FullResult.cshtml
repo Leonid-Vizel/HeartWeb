@@ -6,77 +6,64 @@
     ViewData["Title"] = "Подробные результаты";
     List<string> names = new List<string>();
     List<string> options = new List<string>();
-    //List<int> weights = new List<int>();
-    foreach (PropertyInfo info in Model.GetType().GetProperties().Skip(10))
+    foreach (PropertyInfo info in Model.GetSelectProperties())
     {
         byte value = (byte)info.GetValue(Model);
         names.Add(((info.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute)).DisplayName);
         options.Add((info.GetCustomAttribute(typeof(OptionsAttribute)) as OptionsAttribute).Options[value]);
-        //weights.Add((info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute).Weights[value]);
     }
 }
-
-<table class="table table-info table-bordered table-hover mb-2">
-    <thead class="text-center">
-        <tr>
-            <td><b>Параметр</b></td>
-            <td><b>Ответ</b></td>
-            @*<td><b>Баллы</b></td>*@
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="text-center">
-            <td colspan="3"><b>Анамнез</b></td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(x=>x.Prematurity)</td>
-            @if (Model.Prematurity)
-            {
-                <td>Да</td>
-                @*<td>-2</td>*@
-            }
-            else
-            {
-                <td>Нет</td>
-                @*<td>0</td>*@
-            }
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(x=>x.Aspiration)</td>
-            @if (Model.Aspiration)
-            {
-                <td>Да</td>
-                @*<td>-2</td>*@
-            }
-            else
-            {
-                <td>Нет</td>
-                @*<td>0</td>*@
-            }
-        </tr>
-        @for (int i = 0; i < 9; i++)
-        {
+<div class="table-responsive">
+    <table class="table table-info table-bordered table-hover mb-0">
+        <thead class="text-center">
             <tr>
-                <td>@names[i]</td>
-                <td>@options[i]</td>
-                @*<td>@weights[i]</td>*@
+                <td class="w-50"><b>Параметр</b></td>
+                <td class="w-50"><b>Ответ</b></td>
             </tr>
-        }
-        <tr class="text-center">
-            <td colspan="3"><b>Оценка состояния новорождённого с подозрением на ВПС</b></td>
-        </tr>
-        @for (int i = 10; i < names.Count; i++)
-        {
+        </thead>
+        <tbody>
+            <tr class="text-center">
+                <td colspan="3"><b>Анамнез</b></td>
+            </tr>
             <tr>
-                <td>@names[i]</td>
-                <td>@options[i]</td>
-                @*<td>@weights[i]</td>*@
+                <td>@Html.DisplayNameFor(x=>x.Prematurity)</td>
+                @if (Model.Prematurity)
+                {
+                    <td>Да</td>
+                }
+                else
+                {
+                    <td>Нет</td>
+                }
             </tr>
-        }
-        @*<tr>
-            <td><b>Итог</b></td>
-            <td></td>
-            <td><b>@Model.Calculate()</b></td>
-        </tr>*@
-    </tbody>
-</table>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.Aspiration)</td>
+                @if (Model.Aspiration)
+                {
+                    <td>Да</td>
+                }
+                else
+                {
+                    <td>Нет</td>
+                }
+            </tr>
+            @for (int i = 0; i < 9; i++)
+            {
+                <tr>
+                    <td>@names[i]</td>
+                    <td>@options[i]</td>
+                </tr>
+            }
+            <tr class="text-center">
+                <td colspan="3"><b>Оценка состояния новорождённого с подозрением на ВПС</b></td>
+            </tr>
+            @for (int i = 10; i < names.Count; i++)
+            {
+                <tr>
+                    <td>@names[i]</td>
+                    <td>@options[i]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

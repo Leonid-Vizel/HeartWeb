@@ -15,15 +15,15 @@
                 @if (ViewData["login"] != null)
                 {
                     <a class="navbar-brand" asp-controller="Med" asp-action="Index">HeartWeb</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                 }
                 else
                 {
                     <a class="navbar-brand" asp-controller="Auth" asp-action="Login">HeartWeb</a>
                 }
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav me-auto">
                         @if (ViewData["login"] != null)

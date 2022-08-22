@@ -8,21 +8,21 @@
     <input asp-for="Name" class="form-control" disabled />
 </div>
 <div class="row mb-1">
-    <div class="col">
+    <div class="col-md-6">
         <label class="form-label">Почта</label>
         <input asp-for="Login" class="form-control" disabled />
     </div>
-    <div class="col">
+    <div class="col-md-6">
         <label class="form-label">Номер телефона</label>
         <input asp-for="Phone" class="form-control" disabled />
     </div>
 </div>
 <div class="row mb-1">
-    <div class="col">
+    <div class="col-md-6">
         <label class="form-label">Регион</label>
         <input asp-for="Region" class="form-control" disabled />
     </div>
-    <div class="col">
+    <div class="col-md-6">
         <label class="form-label">Откуда</label>
         @if (Model.IsFromCity)
         {
