@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,6 +16,13 @@ namespace HeartWeb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SaveTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ChildSex = table.Column<int>(type: "int", nullable: false),
+                    BirthTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DaysPassed = table.Column<int>(type: "int", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Region = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Town = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Prematurity = table.Column<bool>(type: "bit", nullable: false),
                     Aspiration = table.Column<bool>(type: "bit", nullable: false),
                     Apgar = table.Column<byte>(type: "tinyint", nullable: false),
@@ -50,7 +58,12 @@ namespace HeartWeb.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Login = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Region = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsFromCity = table.Column<bool>(type: "bit", nullable: false),
+                    Admin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

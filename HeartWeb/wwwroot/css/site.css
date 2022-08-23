@@ -35,3 +35,7 @@ hr {
 .mb-0 {
     margin-bottom: 0px;
 }
+
+.no-wrap {
+    white-space: nowrap;
+}

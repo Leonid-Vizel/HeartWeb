@@ -1,12 +1,13 @@
 ﻿using HeartWeb.Data;
 using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeartWeb.Instruments;
 
 public static class Authenticator
 {
-    public static bool Check(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
+    public static async Task<bool> Check(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
     {
         string? login = session.GetString("login");
         string? hash = session.GetString("hash");
@@ -14,7 +15,7 @@ public static class Authenticator
         {
             return false;
         }
-        User? foundUser = context.Users.FirstOrDefault(x=>x.Login.Equals(login) && x.Password.Equals(hash));
+        User? foundUser = await context.Users.FirstOrDefaultAsync(x=>x.Login.Equals(login) && x.Password.Equals(hash));
         if (foundUser == null)
         {
             return false;
@@ -25,7 +26,7 @@ public static class Authenticator
         return true;
     }
 
-    public static bool? CheckAdmin(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
+    public static async Task<bool?> CheckAdmin(ISession session, ApplicationDbContext context, ViewDataDictionary dictionary)
     {
         string? login = session.GetString("login");
         string? hash = session.GetString("hash");
@@ -33,7 +34,7 @@ public static class Authenticator
         {
             return false;
         }
-        User? foundUser = context.Users.FirstOrDefault(x => x.Login.Equals(login) && x.Password.Equals(hash));
+        User? foundUser = await context.Users.FirstOrDefaultAsync(x => x.Login.Equals(login) && x.Password.Equals(hash));
         if (foundUser == null)
         {
             return false;
@@ -53,31 +54,21 @@ public static class Authenticator
     public static async Task<bool> Register(ApplicationDbContext context, RegisterModel model)
     {
         model.Login = model.Login.ToLower();
-        User? foundUser = context.Users.FirstOrDefault(x=>x.Login.ToLower().Equals(model.Login));
+        User? foundUser = await context.Users.FirstOrDefaultAsync(x=>x.Login.ToLower().Equals(model.Login));
         if (foundUser != null)
         {
             return false;
         }
-        User user = new User()
-        {
-            Login = model.Login,
-            Password = Hasher.ComputeHash(model.Login, model.Password),
-            Name = model.Name,
-            Phone = model.Phone,
-            Region = model.Region,
-            IsFromCity = model.IsFromCity == 1,
-            Admin = false
-        };
-        await context.Users.AddAsync(user);
+        await context.Users.AddAsync(model.ToUser());
         await context.SaveChangesAsync();
         return true;
     }
 
-    public static bool Login(ISession session, ApplicationDbContext context, string login, string password)
+    public static async Task<bool> Login(ISession session, ApplicationDbContext context, string login, string password)
     {
         login = login.ToLower();
         password = Hasher.ComputeHash(login,password);
-        User? foundUser = context.Users.FirstOrDefault(x => x.Login.Equals(login) && x.Password.Equals(password));
+        User? foundUser = await context.Users.FirstOrDefaultAsync(x => x.Login.Equals(login) && x.Password.Equals(password));
         if (foundUser == null)
         {
             return false;

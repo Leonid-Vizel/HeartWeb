@@ -23,46 +23,84 @@
         </thead>
         <tbody>
             <tr class="text-center">
-                <td colspan="3"><b>Анамнез</b></td>
+                <td colspan="2"><b>Основная информация</b></td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.BirthTime)</td>
+                <td>@Model.BirthTime</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.ChildSex)</td>
+                @switch (Model.ChildSex)
+                {
+                    case Sex.Boy:
+                            <td>Мальчик</td>
+                        break;
+                    case Sex.Girl:
+                            <td>Девочка</td>
+                        break;
+                    default:
+                            <td>?</td>
+                        break;
+                }
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.DaysPassed)</td>
+                <td>@Model.DaysPassed</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.Phone)</td>
+                <td>@Model.Phone</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.Region)</td>
+                <td>@Model.Region</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(x=>x.Town)</td>
+                <td>@Model.Town</td>
+            </tr>
+            <tr class="text-center">
+                <td colspan="2"><b>Анамнез</b></td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(x=>x.Prematurity)</td>
                 @if (Model.Prematurity)
                 {
-                    <td>Да</td>
+                            <td>Да</td>
                 }
                 else
                 {
-                    <td>Нет</td>
+                            <td>Нет</td>
                 }
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(x=>x.Aspiration)</td>
                 @if (Model.Aspiration)
                 {
-                    <td>Да</td>
+                            <td>Да</td>
                 }
                 else
                 {
-                    <td>Нет</td>
+                            <td>Нет</td>
                 }
             </tr>
             @for (int i = 0; i < 9; i++)
             {
-                <tr>
-                    <td>@names[i]</td>
-                    <td>@options[i]</td>
-                </tr>
+                        <tr>
+                            <td>@names[i]</td>
+                            <td>@options[i]</td>
+                        </tr>
             }
             <tr class="text-center">
-                <td colspan="3"><b>Оценка состояния новорождённого с подозрением на ВПС</b></td>
+                <td colspan="2"><b>Оценка состояния новорождённого с подозрением на ВПС</b></td>
             </tr>
             @for (int i = 10; i < names.Count; i++)
             {
-                <tr>
-                    <td>@names[i]</td>
-                    <td>@options[i]</td>
-                </tr>
+                        <tr>
+                            <td>@names[i]</td>
+                            <td>@options[i]</td>
+                        </tr>
             }
         </tbody>
     </table>

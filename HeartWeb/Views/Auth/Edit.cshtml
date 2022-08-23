@@ -1,0 +1,39 @@
+﻿@model UserEditModel
+@{
+    ViewData["Title"] = "Редактирование пользователя";
+}
+
+<form asp-controller="Auth" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    <div class="mb-1">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-1">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="row mb-1">
+        <div class="col-sm-6">
+            <label asp-for="Region" class="form-label"></label>
+            <input asp-for="Region" class="form-control" />
+            <span asp-validation-for="Region" class="text-danger"></span>
+        </div>
+        <div class="col-sm-6">
+            <label asp-for="IsFromCity" class="form-label"></label>
+            <select asp-for="IsFromCity" class="form-select">
+                <option disabled selected style="display:none">Выберите опцию</option>
+                <option value="0">Село</option>
+                <option value="1">Город</option>
+            </select>
+            <span asp-validation-for="IsFromCity" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-dark mt-1">Редактировать</button>
+</form>
+
+@section Scripts
+    {
+    <partial name="_ValidationScriptsPartial">
+    }
