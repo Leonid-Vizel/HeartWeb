@@ -3,20 +3,20 @@
     ViewData["Title"] = "Информация о пользователях";
     int counter = 0;
 }
-<partial name="_IconsPartial">
+<partial name="_IconsPartial" />
 <a class="btn btn-outline-success w-100 mb-2" asp-controller="Auth" asp-action="Register">Зарегистрировать нового</a>
 <div class="table-responsive">
     <table class="table table-sm table-bordered table-hover table-success mb-0">
         <thead>
             <tr>
-                <td>№ п/п</td>
-                <td>Почта</td>
-                <td>Телефон</td>
-                <td>Название</td>
-                <td>Город/Село</td>
-                <td>Регион</td>
-                <td>Админ/Работник</td>
-                <td>Действия</td>
+                <th>№ п/п</th>
+                <th>Почта</th>
+                <th>Телефон</th>
+                <th>Название</th>
+                <th>Город/Село</th>
+                <th>Регион</th>
+                <th>Админ/Работник</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>

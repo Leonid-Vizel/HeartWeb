@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool login = ViewData["login"] != null;
+    bool admin = ViewData["admin"] as bool? ?? false;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                @if (ViewData["login"] != null)
+                @if (login)
                 {
                     <a class="navbar-brand" asp-controller="Med" asp-action="Index">Diag-VPS</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -26,7 +30,7 @@
                 }
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav me-auto">
-                        @if (ViewData["login"] != null)
+                        @if (login)
                         {
                             <li class="nav-item">
                                 <a class="nav-link active" asp-controller="Med" asp-action="Form">Диагностика</a>
@@ -34,7 +38,7 @@
                             <li class="nav-item">
                                 <a class="nav-link active" asp-controller="Med" asp-action="MyResults">Мои результаты</a>
                             </li>
-                            @if (ViewData["admin"] != null && ViewData["admin"].Equals("true"))
+                            @if (admin)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link active" asp-controller="Med" asp-action="Results">Результаты</a>
@@ -48,7 +52,7 @@
                             </li>
                         }
                     </ul>
-                    @if (ViewData["login"] != null)
+                    @if (login)
                     {
                         <ul class="navbar-nav">
                             <li class="nav-item">
