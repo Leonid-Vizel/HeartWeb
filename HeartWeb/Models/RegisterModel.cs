@@ -20,7 +20,7 @@ namespace HeartWeb.Models
         [Required(ErrorMessage = "Укажите название организации!")]
         [MinLength(1, ErrorMessage = "Минимальный размер названия: 1 символ!")]
         [MaxLength(200, ErrorMessage = "Максимальный размер названия: 200 символов!")]
-        [DisplayName("Название оргинизации")]
+        [DisplayName("Название организации")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Укажите номер телефона!")]
         [MinLength(1, ErrorMessage = "Минимальный размер телефонного номера: 1 символ!")]

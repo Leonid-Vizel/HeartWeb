@@ -1,5 +1,6 @@
 ﻿using HeartWeb.Data;
 using HeartWeb.Instruments;
+using HeartWeb.Instruments.Filters;
 using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,26 +11,21 @@ namespace HeartWeb.Controllers
     {
         private readonly ApplicationDbContext db;
 
-        public AuthController(ApplicationDbContext db)
-        {
-            this.db = db;
-        }
+        public AuthController(ApplicationDbContext db) => this.db = db;
 
         #region Login
-        public IActionResult Login()
-        {
-            return View();
-        }
+        [Auth(false)]
+        public IActionResult Login() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(AuthModel model)
+        public async Task<IActionResult> Login(AuthModel model, CancellationToken token = default)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            if (!await Authenticator.Login(HttpContext.Session, db, model.Login, model.Password))
+            if (!await Authenticator.Login(HttpContext.Session, db, model, token))
             {
                 ModelState.AddModelError("Login", "Неверные почта или пароль!");
                 return View(model);
@@ -58,79 +54,42 @@ namespace HeartWeb.Controllers
         #endregion
 
         #region Users
-        public async Task<IActionResult> Users()
+        [AuthAdmin]
+        public async Task<IActionResult> Users(CancellationToken token = default)
         {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View(db.Users.ToList());
+            var users = await db.Users.ToListAsync(token);
+            return View(users);
         }
         #endregion
 
         #region Self
-        public async Task<IActionResult> SelfData()
+        [Auth]
+        public async Task<IActionResult> SelfData(CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            string login = Authenticator.GetLogin(ViewData).ToLower();
-            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Login.Equals(login));
+            int id = Authenticator.GetId(ViewData);
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundUser == null)
             {
-                return RedirectToAction("NotFound", "Error");
+                return NotFound();
             }
             return View(foundUser);
         }
         #endregion
 
         #region Register
-        public async Task<IActionResult> Register()
-        {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View();
-        }
+        [AuthAdmin]
+        public IActionResult Register() => View();
 
+        [AuthAdmin]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterModel model, CancellationToken token = default)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            if (!await Authenticator.Register(db, model))
+            if (!await Authenticator.Register(db, model, token))
             {
                 ModelState.AddModelError("Login", "Аккаунт на эту почту уже зарегистрирован!");
                 return View(model);
@@ -140,86 +99,58 @@ namespace HeartWeb.Controllers
         #endregion
 
         #region Edit
-        public async Task<IActionResult> Edit(int id)
+        [AuthAdmin]
+        public async Task<IActionResult> Edit(int id, CancellationToken token = default)
         {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundUser == null)
             {
-                return RedirectToAction("NotFound", "Error");
+                return NotFound();
             }
             return View(foundUser.ToEditModel());
         }
 
+        [AuthAdmin]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UserEditModel model)
+        public async Task<IActionResult> Edit(UserEditModel model, CancellationToken token = default)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == model.Id);
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == model.Id, token);
             if (foundUser == null)
             {
-                return RedirectToAction("NotFound", "Error");
+                return NotFound();
             }
             foundUser.Update(model.ToUser());
             if (db.Entry(foundUser).State == EntityState.Modified)
             {
                 db.Update(foundUser);
-                await db.SaveChangesAsync();
+                await BetterSession.EndSessionsByLogin(HttpContext.Session, foundUser.Login, token);
+                await db.SaveChangesAsync(token);
             }
             return RedirectToAction("Users");
         }
         #endregion
 
         #region Delete
-        public async Task<IActionResult> Delete(int id)
+        [AuthAdmin]
+        public async Task<IActionResult> Delete(int id, CancellationToken token = default)
         {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            User? foundUser = await db.Users.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundUser == null)
             {
-                return RedirectToAction("NotFound", "Error");
+                return NotFound();
             }
             if (foundUser.Login.ToLower().Equals(ViewData["login"]))
             {
                 return RedirectToAction("SelfDelete", "Error");
             }
             db.Users.Remove(foundUser);
-            await db.SaveChangesAsync();
+            await db.SaveChangesAsync(token);
+            await BetterSession.EndSessionsByLogin(HttpContext.Session, foundUser.Login, token);
             return RedirectToAction("Users");
         }
         #endregion

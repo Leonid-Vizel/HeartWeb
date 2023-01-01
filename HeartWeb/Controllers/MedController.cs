@@ -1,5 +1,6 @@
 ﻿using HeartWeb.Data;
 using HeartWeb.Instruments;
+using HeartWeb.Instruments.Filters;
 using HeartWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,62 +19,36 @@ namespace HeartWeb.Controllers
         }
 
         #region Index
-        public async Task<IActionResult> Index()
-        {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View();
-        }
+        [Auth]
+        public IActionResult Index() => View();
         #endregion
 
         #region Form
-        public async Task<IActionResult> Form()
-        {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View();
-        }
+        [Auth]
+        public IActionResult Form() => View();
 
+        [Auth]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Form(FormModel model)
+        public async Task<IActionResult> Form(FormModel model, CancellationToken token = default)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
             model.Login = Authenticator.GetLogin(ViewData);
             model.SaveTime = DateTime.Now;
-            await db.FormResults.AddAsync(model);
-            await db.SaveChangesAsync();
+            await db.FormResults.AddAsync(model, token);
+            await db.SaveChangesAsync(token);
             return RedirectToAction("Result", new { id = model.Id });
         }
         #endregion
 
         #region Edit
-        public async Task<IActionResult> Edit(int id)
+        [Auth]
+        public async Task<IActionResult> Edit(int id, CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id);
+            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundModel == null)
             {
                 return RedirectToAction("Error", "NotFound");
@@ -81,17 +56,12 @@ namespace HeartWeb.Controllers
             return View(foundModel);
         }
 
+        [Auth]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(FormModel model)
+        public async Task<IActionResult> Edit(FormModel model, CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == model.Id);
+            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == model.Id, token);
             if (foundModel == null)
             {
                 return RedirectToAction("Error", "NotFound");
@@ -100,22 +70,17 @@ namespace HeartWeb.Controllers
             if (db.Entry(foundModel).State == EntityState.Modified)
             {
                 db.Update(foundModel);
-                await db.SaveChangesAsync();
+                await db.SaveChangesAsync(token);
             }
             return RedirectToAction("Result", new { id = model.Id });
         }
         #endregion
 
         #region Results
-        public async Task<IActionResult> Result(int id)
+        [Auth]
+        public async Task<IActionResult> Result(int id, CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id);
+            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundModel == null)
             {
                 return RedirectToAction("Error", "NotFound");
@@ -123,31 +88,17 @@ namespace HeartWeb.Controllers
             return View(foundModel);
         }
 
-        public async Task<IActionResult> Results()
+        [AuthAdmin]
+        public async Task<IActionResult> Results(CancellationToken token = default)
         {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View(await db.FormResults.CountAsync());
+            int count = await db.FormResults.CountAsync(token);
+            return View(count);
         }
 
-        public async Task<IActionResult> FullResult(int id)
+        [Auth]
+        public async Task<IActionResult> FullResult(int id, CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id);
+            FormModel? foundModel = await db.FormResults.FirstOrDefaultAsync(x => x.Id == id, token);
             if (foundModel == null)
             {
                 return RedirectToAction("Error", "NotFound");
@@ -155,55 +106,34 @@ namespace HeartWeb.Controllers
             return View(foundModel);
         }
 
-        public async Task<IActionResult> MyResults(int page = 1)
+        [Auth]
+        public async Task<IActionResult> MyResults(int page = 1, CancellationToken token = default)
         {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            if (page < 1)
-            {
-                page = 1;
-            }
-            return View(db.FormResults.Where(x=>x.Login.Equals(Authenticator.GetLogin(ViewData))).Select(x=> new Tuple<int, DateTime>(x.Id,x.SaveTime)).ToPagedList(page, pageCapacity));
+            page = page < 1 ? 1 : page;
+            string login = Authenticator.GetLogin(ViewData);
+            var query = await db.FormResults.Where(x => x.Login.Equals(login))
+                                            .Select(x => new Tuple<int, DateTime>(x.Id, x.SaveTime))
+                                            .ToPagedListAsync(page, pageCapacity, token);
+            return View(query);
         }
         #endregion
 
         #region Export
+        [AuthAdmin]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Export()
+        public async Task<IActionResult> Export(CancellationToken token = default)
         {
-            #region Auth Admin
-            bool? value = await Authenticator.CheckAdmin(HttpContext.Session, db, ViewData);
-            if (value == null)
-            {
-                return RedirectToAction("Forbidden", "Error");
-            }
-            if (!value.Value)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return File(Exporter.ExportResults(db.FormResults.ToList()),
+            var results = await db.FormResults.ToListAsync(token);
+            return File(Exporter.ExportResults(results),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "Результаты.xlsx");
         }
         #endregion
 
         #region Literature
-        public async Task<IActionResult> Literature()
-        {
-            #region Auth
-            if (!await Authenticator.Check(HttpContext.Session, db, ViewData))
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-            #endregion
-            return View();
-        }
+        [Auth]
+        public async Task<IActionResult> Literature() => View();
         #endregion
     }
 }

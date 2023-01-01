@@ -1,35 +1,36 @@
 using HeartWeb.Data;
-using HeartWeb.Instruments;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(30);
+});
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+bool development = builder.Environment.IsDevelopment();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString(development ? "DefaultConnection" : "DeployConnection")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (!development)
 {
-    app.UseExceptionHandler("/Med/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error/Code/500");
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Error/Code/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Med}/{action=Index}/{id?}");
-
 app.Run();
