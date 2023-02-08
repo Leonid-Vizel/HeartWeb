@@ -77,10 +77,10 @@ namespace HeartWeb.Controllers
         #endregion
 
         #region Register
-        //[AuthAdmin]
+        [AuthAdmin]
         public IActionResult Register() => View();
 
-        //[AuthAdmin]
+        [AuthAdmin]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model, CancellationToken token = default)
