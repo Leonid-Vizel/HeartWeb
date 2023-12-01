@@ -1,13 +1,12 @@
-﻿namespace HeartWeb.Attributes
+﻿namespace HeartWeb.Attributes;
+
+public sealed class OptionsAttribute : Attribute
 {
-    public class OptionsAttribute : Attribute
+    public string[] Options { get; set; }
+    public OptionsAttribute(params string[] options)
     {
-        public string[] Options { get; set; }
-        public OptionsAttribute(params string[] options)
-        {
-            Options = new string[options.Length + 1];
-            Options[0] = "Неизвестно";
-            options.CopyTo(Options, 1);
-        }
+        Options = new string[options.Length + 1];
+        Options[0] = "Неизвестно";
+        options.CopyTo(Options, 1);
     }
 }

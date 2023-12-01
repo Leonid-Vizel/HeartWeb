@@ -1,15 +1,14 @@
 ﻿using HeartWeb.Instruments.Filters;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HeartWeb.Controllers
+namespace HeartWeb.Controllers;
+
+public sealed class ErrorController : Controller
 {
-    public class ErrorController : Controller
-    {
 
-        [AuthLoad]
-        public IActionResult Code(string id) => View($"~/Views/Error/{id}.cshtml");
+    [AuthLoad]
+    public IActionResult Code(string id) => View($"~/Views/Error/{id}.cshtml");
 
-        [AuthLoad]
-        public IActionResult SelfDelete() => View();
-    }
+    [AuthLoad]
+    public IActionResult SelfDelete() => View();
 }

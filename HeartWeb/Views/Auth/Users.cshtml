@@ -8,7 +8,7 @@
 <div class="table-responsive">
     <table class="table table-sm table-bordered table-hover table-success mb-0">
         <thead>
-            <tr>
+            <tr class="cell-centered">
                 <th>№ п/п</th>
                 <th>Почта</th>
                 <th>Телефон</th>
@@ -23,7 +23,7 @@
             @foreach (User user in Model)
             {
                 counter++;
-                <tr>
+                <tr class="cell-centered">
                     <td>@counter</td>
                     <td>@user.Login</td>
                     <td>@user.Phone</td>
@@ -45,9 +45,9 @@
                     {
                         <td>Работник</td>
                     }
-                    <td>
-                        <a class="btn btn-warning" asp-action="Edit" asp-controller="Auth" asp-route-id="@user.Id"><i class="bi bi-pencil-fill"></i></a>
-                        <a class="btn btn-danger" asp-action="Delete" asp-controller="Auth" asp-route-id="@user.Id"><i class="bi bi-trash3-fill"></i></a>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-controller="Auth" asp-route-id="@user.Id"><i class="bi bi-pencil-fill"></i></a>
+                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-controller="Auth" asp-route-id="@user.Id"><i class="bi bi-trash3-fill"></i></a>
                     </td>
                 </tr>
             }

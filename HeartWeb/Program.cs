@@ -1,3 +1,5 @@
+using ClosedXML.Excel;
+using ClosedXML.Graphics;
 using HeartWeb.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,7 @@ builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromDays(30);
 });
-
+LoadOptions.DefaultGraphicEngine = new DefaultGraphicEngine("Nimbus Sans");
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 bool development = builder.Environment.IsDevelopment();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
