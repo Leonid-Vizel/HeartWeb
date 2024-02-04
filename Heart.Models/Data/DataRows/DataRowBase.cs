@@ -1,179 +1,162 @@
-﻿using HeartWeb.Attributes;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+using Heart.Models.Enums;
 
-namespace HeartWeb.Models;
+namespace Heart.Models.Data.DataRows;
 
-public sealed class FormModel
+public abstract class DataRowBase
 {
-    public const int SkipNumber = 11;
-
-    [Key]
-    public int Id { get; set; }
-    [ValidateNever]
-    public string Login { get; set; } = null!;
-    [ValidateNever]
-    [DisplayName("Время сохранения: ")]
-    public DateTime SaveTime { get; set; }
-
     [DisplayName("Пол ребёнка")]
     [Range(0, 1, ErrorMessage = "Выберите пол ребёнка!")]
     [Required(ErrorMessage = "Выберите пол ребёнка!")]
-    public Sex ChildSex { get; set; }
-
+    public Sex Sex { get; set; }
     [DisplayName("Время рождения ребёнка")]
     [Required(ErrorMessage = "Укажите время рождения ребёнка!")]
     public DateTime BirthTime { get; set; }
-
     [DisplayName("На какой день от рождения проводились анализы?")]
     [Required(ErrorMessage = "Укажите на какой день от рождения проводились анализы!")]
-    [Range(0,28,ErrorMessage = "Форма действительна только если анализы проведены не более чем через 28 дней после рождения!")]
+    [Range(0, 28, ErrorMessage = "Форма действительна только если анализы проведены не более чем через 28 дней после рождения!")]
     public int DaysPassed { get; set; }
-
     [Required(ErrorMessage = "Укажите номер телефона!")]
     [MinLength(1, ErrorMessage = "Минимальный размер телефонного номера: 1 символ!")]
     [MaxLength(16, ErrorMessage = "Максимальный размер телефонного номера: 16 символов!")]
     [DisplayName("Контактный номер телефона родителей")]
     [Phone(ErrorMessage = "Неверный формат номера телефона!")]
-    public string Phone { get; set; }
-
+    public string Phone { get; set; } = null!;
     [Required(ErrorMessage = "Укажите регион!")]
     [MinLength(1, ErrorMessage = "Минимальный размер региона: 1 символ!")]
     [MaxLength(100, ErrorMessage = "Максимальный размер региона: 100 символов!")]
     [DisplayName("Регион")]
-    public string Region { get; set; }
-
+    public string Region { get; set; } = null!;
     [Required(ErrorMessage = "Укажите населённый пункт!")]
     [MinLength(1, ErrorMessage = "Минимальный размер населённого пункта: 1 символ!")]
     [MaxLength(100, ErrorMessage = "Максимальный размер региона: 100 символов!")]
     [DisplayName("Населённый пункт")]
-    public string Town { get; set; }
-
+    public string Town { get; set; } = null!;
     [DisplayName("Недоношенность")]
     public bool Prematurity { get; set; }
     [DisplayName("Аспирация околоплодных вод (особенно мекониальная)")]
     public bool Aspiration { get; set; }
     [DisplayName("Апгар:")]
-    [Options("3-5", "5-7", "7-9")]
-    [Weights(-2, 0, 1)]
     [Required(ErrorMessage = "Укажите значение по шкале апгар!")]
-    public byte Apgar { get; set; }
+    public Apgar Apgar { get; set; }
     [DisplayName("Динамика состояния:")]
-    [Options("Положительная без медицинской поддержки", "Тяжёлое состояние с момента рождения", "Ухудшение к 3-4 неделе", "Резкое ухудшениечерез несколько часов после рождения")]
-    [Weights(2, -2, 4, 5)]
     [Required(ErrorMessage = "Укажите динамику состояния!")]
-    public byte StatusDynamics { get; set; }
+    public StatusDynamics StatusDynamics { get; set; }
     [DisplayName("Частота дыхания в покое:")]
-    [Options("40 и менее в мин. (брадипноэ с элементами апноэ)", "40-60 в мин.", "60-80 в мин.", "80-100 в мин.")]
-    [Weights(3, 0, 2, 4)]
     [Required(ErrorMessage = "Укажите частоту дыхания в покое!")]
-    public byte BreathFrequency { get; set; }
+    public BreathFrequency BreathFrequency { get; set; }
     [DisplayName("Частота сердечных сокращений в покое:")]
-    [Options("Менее 110 в мин.", "110-140 в мин.", "140-150 в мин.", "160-180 в мин.", "Более 180 в мин.")]
-    [Weights(3, 0, 2, 4, 4)]
     [Required(ErrorMessage = "Укажите частоту сердечных сокращений в покое!")]
-    public byte HeartBeatFrequency { get; set; }
+    public HeartBeatFrequency HeartBeatFrequency { get; set; }
     [DisplayName("Окраска кожи:")]
-    [Options("Физиологическая", "Акроцианоз", "Мраморность", "Тотальный цианоз", "Дифференцированный цианоз")]
-    [Weights(2, 0, 3, 5, 5)]
     [Required(ErrorMessage = "Укажите окраску кожи!")]
-    public byte SkinColor { get; set; }
+    public SkinColor SkinColor { get; set; }
     [DisplayName("Переферический пульс:")]
-    [Options("Удовлетворительного наполнения на всех конечностях", "Не определяется на бедренной артерии", "Симметрично снижен")]
-    [Weights(0, 5, 5)]
     [Required(ErrorMessage = "Укажите переферический пульс!")]
-    public byte PerepherialPulse { get; set; }
+    public PerepherialPulse PerepherialPulse { get; set; }
     [DisplayName("Аускультативная картина:")]
-    [Options("Систолический 1/6 шум на основании", "Систолический 2-3/6 вдоль левого края грудины", "Систолический 2/6 с максимумом на спине", "Отсутствие шума в сердце, шлухие сердечные тоны")]
-    [Weights(0, 2, 4, -1)]
     [Required(ErrorMessage = "Укажите аускультативную картину!")]
-    public byte AuskultativePicture { get; set; }
+    public AuskultativePicture AuskultativePicture { get; set; }
     [DisplayName("Динамика шума:")]
-    [Options("Шума нет", "Появляется через несколько часов или дней после рождения", "Выслушивается в родильном зале", "Нарастает с ухудшением состояния", "Исчезает с ухудшением состояния")]
-    [Weights(0, 0, 4, 3, 6)]
     [Required(ErrorMessage = "Укажите динамику шума")]
-    public byte NoiseDynamics { get; set; }
+    public NoiseDynamics NoiseDynamics { get; set; }
     [DisplayName("Динамика веса в первые дни жизни:")]
-    [Options("Нормальная потеря", "Нет динамики", "Патологическая прибавка")]
-    [Weights(0, 1, 2)]
     [Required(ErrorMessage = "Укажите динамику веса в первые дни жизни!")]
-    public byte WeightDynamics { get; set; }
+    public WeightDynamics WeightDynamics { get; set; }
     [DisplayName("Диурез:")]
-    [Options("Нормальный", "Стимулируется мочегонными", "Олигурия, переходящая в анурию")]
-    [Weights(0, 2, 3)]
     [Required(ErrorMessage = "Укажите диурез!")]
-    public byte Diurez { get; set; }
+    public Diurez Diurez { get; set; }
     [DisplayName("Аускультативная картина со стороны лёгких:")]
-    [Options("Дыхание проводится по всем полям, хрипов нет", "Очаговые нарушения", "Постоянная крепитация по всем полям")]
-    [Weights(0, -2, 1)]
     [Required(ErrorMessage = "Укажите аускультативную картину со стороны лёгких!")]
-    public byte AuskultativeLungPicture { get; set; }
+    public AuskultativeLungPicture AuskultativeLungPicture { get; set; }
     [DisplayName("Динамика на кардиотониках:")]
-    [Options("Не применялась", "Положительная", "Нет динамики")]
     [Required(ErrorMessage = "Укажите динамику на кардиотониках!")]
-    [Weights(0, 2, 3)]
-    public byte CardioDynamics { get; set; }
+    public CardioDynamics CardioDynamics { get; set; }
     [DisplayName("Проба с дыханием 100% кислородом:")]
-    [Options("Положительная", "Отрицательная")]
-    [Weights(-2, 6)]
     [Required(ErrorMessage = "Укажите пробу с дыханием 100% кислородом!")]
-    public byte OxygenBreathTest { get; set; }
+    public OxygenBreathTest OxygenBreathTest { get; set; }
     [DisplayName("Артериальное давление руки/ноги:")]
-    [Options("Равное", "Постоянный градиент более 30 мм.рт.ст.", "Системная гипотония")]
-    [Weights(0, 5, 5)]
     [Required(ErrorMessage = "Укажите артериальное давление руки/ноги!")]
-    public byte ArterialPressure { get; set; }
+    public ArterialPressure ArterialPressure { get; set; }
     [DisplayName("ЭКГ:")]
-    [Options("Без особенностей", "Гипертрофия правых отделов", "Комбинированная гипертрофия или гипертрофия левого желудочка", "Патологическое отклонение ЭОС влево")]
-    [Weights(0, 4, 2, 5)]
     [Required(ErrorMessage = "Укажите ЭКГ!")]
-    public byte ECG { get; set; }
+    public ECG ECG { get; set; }
     [DisplayName("Рентгенография органов грудной клетки:")]
-    [Options("Нормальные размеры сердца", "Умеренное увеличение", "Кардиомегалия")]
-    [Weights(-1, 3, 4)]
     [Required(ErrorMessage = "Укажите рентгенографию органов грудной клетки!")]
-    public byte Rentgenography { get; set; }
+    public Rentgenography Rentgenography { get; set; }
     [DisplayName("Лёгочные поля:")]
-    [Options("Без патологии", "Очаговая инфильтрация", "Усиление лёгочного рисунка", "Диффузное снижение пневматизации", "Обеднение лёгочного рисунка", "Другие изменения")]
-    [Weights(3, -2, 2, 5, 4, -5)]
     [Required(ErrorMessage = "Укажите лёгочные поля!")]
-    public byte LungFields { get; set; }
+    public LungFields LungFields { get; set; }
     [DisplayName("Сатурация O2:")]
-    [Options("95-100%", "90-95%", "80-90%", "Менее 80%")]
-    [Weights(0, 2, 1, 4)]
     [Required(ErrorMessage = "Укажите сатурацию!")]
-    public byte Saturation { get; set; }
+    public Saturation Saturation { get; set; }
     [DisplayName("КЩС (pO2):")]
-    [Options("Норма", "Умеренно снижено", "Менее 30 мм.рт.ст.")]
-    [Weights(-2, 0, 3)]
     [Required(ErrorMessage = "Укажите КЩС (pO2)!")]
-    public byte PO2 { get; set; }
+    public PO2 PO2 { get; set; }
     [DisplayName("КЩС:")]
-    [Options("pH норма, pCO2 норма", "pH снижено, pCO2 повышено", "pH снижено, pCO2 норма", "pH снижено, pCO2 снижено")]
-    [Weights(1, -2, 2, 3)]
     [Required(ErrorMessage = "Укажите КЩС!")]
-    public byte AcidAlkalineState { get; set; }
+    public AcidAlkalineState AcidAlkalineState { get; set; }
 
-    public IEnumerable<PropertyInfo> GetSelectProperties()
+    public DataRowBase() : base() { }
+    public DataRowBase(DataRowBase model) : this()
     {
-        return GetType().GetProperties().Skip(SkipNumber);
+        BirthTime = model.BirthTime;
+        Sex = model.Sex;
+        DaysPassed = model.DaysPassed;
+        Phone = model.Phone;
+        Region = model.Region;
+        Town = model.Town;
+        Prematurity = model.Prematurity;
+        Aspiration = model.Aspiration;
+        Apgar = model.Apgar;
+        StatusDynamics = model.StatusDynamics;
+        BreathFrequency = model.BreathFrequency;
+        HeartBeatFrequency = model.HeartBeatFrequency;
+        SkinColor = model.SkinColor;
+        PerepherialPulse = model.PerepherialPulse;
+        AuskultativePicture = model.AuskultativePicture;
+        NoiseDynamics = model.NoiseDynamics;
+        WeightDynamics = model.WeightDynamics;
+        Diurez = model.Diurez;
+        AuskultativeLungPicture = model.AuskultativeLungPicture;
+        CardioDynamics = model.CardioDynamics;
+        OxygenBreathTest = model.OxygenBreathTest;
+        ArterialPressure = model.ArterialPressure;
+        ECG = model.ECG;
+        Rentgenography = model.Rentgenography;
+        LungFields = model.LungFields;
+        Saturation = model.Saturation;
+        PO2 = model.PO2;
+        AcidAlkalineState = model.AcidAlkalineState;
     }
 
-    public int Calculate()
+    public void Update(DataRowBase model)
     {
-        int total = 0;
-        foreach (PropertyInfo info in GetSelectProperties())
+        if (BirthTime != model.BirthTime)
         {
-            WeightsAttribute attribute = info.GetCustomAttribute(typeof(WeightsAttribute)) as WeightsAttribute;
-            total += attribute.Weights[(byte)info.GetValue(this)];
+            BirthTime = model.BirthTime;
         }
-        return total;
-    }
-
-    public void Update(FormModel model)
-    {
+        if (Sex != model.Sex)
+        {
+            Sex = model.Sex;
+        }
+        if (DaysPassed != model.DaysPassed)
+        {
+            DaysPassed = model.DaysPassed;
+        }
+        if (Phone != model.Phone)
+        {
+            Phone = model.Phone;
+        }
+        if (Region != model.Region)
+        {
+            Region = model.Region;
+        }
+        if (Town != model.Town)
+        {
+            Town = model.Town;
+        }
         if (Prematurity != model.Prematurity)
         {
             Prematurity = model.Prematurity;
@@ -182,7 +165,6 @@ public sealed class FormModel
         {
             Aspiration = model.Aspiration;
         }
-
         if (Apgar != model.Apgar)
         {
             Apgar = model.Apgar;
@@ -264,9 +246,4 @@ public sealed class FormModel
             AcidAlkalineState = model.AcidAlkalineState;
         }
     }
-}
-
-public enum Sex
-{
-    Boy, Girl
 }
